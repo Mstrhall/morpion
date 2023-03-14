@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeu de Morpion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<nav class="navbar">
+    <a class="nav-link" href="#">Accueil</a>
+    <a class="nav-link" href="#">Nouvelle partie</a>
+    <div class="dropdown">
+
+
+        </div>
+    </div>
+</nav>
+
+<body>
+<h1>Jeu de Morpion</h1>
+<div id="board"></div>
+<script>
+    // Initialisation du tableau de jeu
+    let board = ['', '', '', '', '', '', '', '', ''];
+
+    // Joueur actuel (X ou O)
+    let currentPlayer = 'X';
+
+    // Fonction pour afficher le tableau de jeu
+    function drawBoard() {
+        let boardElement = document.getElementById('board');
+        let html = '';
+
+        // Boucle à travers chaque case du tableau et crée un bouton avec un gestionnaire d'événements pour chaque case
+        for (let i = 0; i < board.length; i++) {
+            html += '<button class="square" onclick="squareClicked(' + i + ')">' + board[i] + '</button>';
+            if ((i + 1) % 3 === 0) {
+                html += '<br>';
+            }
+        }
+
+        boardElement.innerHTML = html;
+    }
+
+    // Fonction appelée lorsqu'un bouton est cliqué
+    function squareClicked(index) {
+        // Vérifie si la case est vide
+        if (board[index] === '') {
+            // Place le symbole du joueur actuel dans la case
+            board[index] = currentPlayer;
+
+            // Change le joueur actuel
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+            // Actualise l'affichage du tableau de jeu
+            drawBoard();
+
+            // Vérifie si un joueur a gagné
+            checkForWin();
+        }
+    }
+
+    // Fonction pour vérifier si un joueur a gagné
+    function checkForWin() {
+        let winningCombinations = [
+            // Lignes horizontales
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            // Lignes verticales
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            // Diagonales
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        for (let i = 0; i < winningCombinations.length; i++) {
+            let [a, b, c] = winningCombinations[i];
+            if (board[a] !== '' && board[a] === board[b] && board[a] === board[c]) {
+                alert('Le joueur ' + board[a] + ' a gagné!');
+                reset();
+                return;
+            }
+        }
+
+        // Vérifie s'il n'y a plus de cases vides (match nul)
+        if (board.indexOf('') === -1) {
+            alert('Match nul!');
+            reset();
+            return;
+        }
+    }
+
+    // Fonction pour réinitialiser le jeu
+    function reset() {
+        board = ['', '', '', '', '', '', '', '', ''];
+        currentPlayer = 'X';
+        drawBoard();
+    }
+
+    // Affiche le tableau de jeu au chargement de la page
+    drawBoard();
+</script>
+<style>
+    .square {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin: 5px;
+    }
+</style>
